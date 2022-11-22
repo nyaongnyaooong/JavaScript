@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>끝말잇기</title>
+  <style>
+    
+  </style>
+</head>
+<body>
+  <div><span id="person">1</span>번째 참가자</div>
+  <div>제시어: <span id="preWord"></span></div>
+  <input type="text">
+  <button>입력</button>
+
+  <script>
+    let maxPerson = parseInt(prompt('몇 명이 참가하나요?'));
+    //prompt로 입력 받을 시 string형이므로 int로 형변환
+    while(maxPerson < 1) {
+      maxPerson = parseInt(prompt('1이상의 숫자를 입력해주세요'));
+    }
+    
+
+    let nowPerson = 1;
+    //현재 몇번째 사람이 입력할 차례 인가
+
+    const _input = document.querySelector('input'); //input 태그 접근 변수
+    const _wordButton = document.querySelector('button'); //button 태그 접근 변수
+    const _person = document.querySelector('#person');  //id가 person인 태그 접근 변수
+    const _preWord = document.querySelector('#preWord'); //id가 preWord인 태그 접근 변수
+    let nowWord;  //input 태그에 실시간 입력되는 단어를 받는 변수
+    let presentWord;  //현재 제시어
+
+    //input 이벤트가 발생할 때
+    _input.addEventListener('input', function(event) {
+      nowWord = event.target.value; //nowWord 변수에 input태그 내용 저장
+      console.log(nowWord); //debug용
+    });
+
+    //button 이벤트 발생
+    _wordButton.addEventListener('click', function() {
+      //제시어가 없거나 끝말잇기 규칙 상 올바른 단어 입력시
+      if (!presentWord || presentWord[presentWord.length - 1] === nowWord[0]) {
+        presentWord = nowWord;  //input 내용 제시어로 설정
+        _preWord.textContent = presentWord; //html에 표기
+        nowWord = '';  //input 비우기
+        _input.value = ''; //input 비우기
+
+        nowPerson++;  //다음 사람
+        if (nowPerson > maxPerson) {  //참가인원보다 크면
+          nowPerson = 1;  //다시 첫번째 인원
+        }
+        _person.textContent = nowPerson;      
+      }
+      else {
+        alert('틀린 단어입니다');
+        nowWord = '';
+        _input.value = '';      
+      }
+
+      _input.focus(); //input에 커서 놓기
+    });
+    
+  </script>
+</body>
+</html>
