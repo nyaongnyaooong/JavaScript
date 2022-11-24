@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    
+    * {
+      box-sizing: border-box;
+    }
+
+    #formula { width: 250px; height: 30px; margin: 5px; text-align: right; font-size: 15px;}
+    #result { width: 250px; height: 50px; margin: 5px; text-align: right; font-size: 20px;}
+    
+    button {
+      width: 50px;
+      height: 50px;
+      margin: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="row">
+    <input readonly id="formula">
+  </div>
+
+  <div class="row">
+    <input readonly id="result">
+  </div>
+
+  <div class="row">
+    <button id="pad7">7</button>
+    <button id="pad8">8</button>
+    <button id="pad9">9</button>
+    <button id="padMultiply">X</button>
+
+  </div>
+
+  <div class="row">
+    <button id="pad4">4</button>
+    <button id="pad5">5</button>
+    <button id="pad6">6</button>
+    <button id="padDivision">/</button>
+  </div>
+
+  <div class="row">
+    <button id="pad1">1</button>
+    <button id="pad2">2</button>
+    <button id="pad3">3</button>
+    <button id="padPlus">+</button>
+  </div>
+
+  <div class="row">
+    <button id="padClear">C</button>
+    <button id="pad0">0</button>
+    <button id="padEqual">=</button>
+    <button id="padMinus">-</button>
+  </div>
+
+  <script>
+    const _formula = document.querySelector('#formula'); 
+    const _result = document.querySelector('#result'); 
+
+    const _pad1 = document.querySelector('#pad1'); 
+    const _pad2 = document.querySelector('#pad2'); 
+    const _pad3 = document.querySelector('#pad3'); 
+    const _pad4 = document.querySelector('#pad4'); 
+    const _pad5 = document.querySelector('#pad5'); 
+    const _pad6 = document.querySelector('#pad6'); 
+    const _pad7 = document.querySelector('#pad7'); 
+    const _pad8 = document.querySelector('#pad8'); 
+    const _pad9 = document.querySelector('#pad9'); 
+    const _pad0 = document.querySelector('#pad0'); 
+
+    const _padClear = document.querySelector('#padClear'); 
+    const _padEqual = document.querySelector('#padEqual'); 
+    const _padMinus = document.querySelector('#padMinus'); 
+    const _padPlus = document.querySelector('#padPlus'); 
+    const _padDivision = document.querySelector('#padDivision'); 
+    const _padMultiply = document.querySelector('#padMultiply'); 
+
+    let num1 = '';
+    let num2 = '';
+    let operator = '';
+
+    let onClickCheck = (onClickPad) => () => {
+      if (!isNaN(onClickPad)) { //누른 값이 숫자면
+        if (!operator) {
+          num1 += onClickPad;
+          _result.value = num1;
+        }
+        else
+        {
+          num2 += onClickPad;
+          _result.value = num2;
+          //_formula.value = String(num1) + operator + String(num2);
+        }
+      } else if (onClickPad === 'C') {  //누른 값이 'Clear'면
+        num1 = '';
+        num2 = '';
+        operator = '';
+        _formula.value = '';
+        _result.value = '';
+        
+      } else if (onClickPad === '='){ //누른 값이 '='면
+        switch(operator) {
+          case '+' :
+            _formula.value = num1 + ' ' + operator + ' ' + num2 + ' = ';
+            num1 = parseInt(num1) + parseInt(num2);
+            _result.value = num1;
+            break;
+          case '-' :
+          _formula.value = num1 + ' ' + operator + ' ' + num2 + ' = ';
+            num1 = parseInt(num1) - parseInt(num2);
+            _result.value = num1;
+            break;
+          case 'X' :
+          _formula.value = num1 + ' ' + operator + ' ' + num2 + ' = ';
+            num1 = parseInt(num1) * parseInt(num2);
+            _result.value = num1;
+            break;
+          case '/' :
+          _formula.value = num1 + ' ' + operator + ' ' + num2 + ' = ';
+            num1 = parseInt(num1) / parseInt(num2);
+            _result.value = num1;
+            break;
+          default :
+            break;
+        }
+      } else {
+        num2 = '';
+        operator = onClickPad;
+        _formula.value = num1 + ' ' + operator + ' ';
+      }
+
+    };
+
+
+    //버튼 입력시 onClickCheck 함수 호출
+    _pad1.addEventListener('click', onClickCheck('1'));
+    _pad2.addEventListener('click', onClickCheck('2'));
+    _pad3.addEventListener('click', onClickCheck('3'));
+    _pad4.addEventListener('click', onClickCheck('4'));
+    _pad5.addEventListener('click', onClickCheck('5'));
+    _pad6.addEventListener('click', onClickCheck('6'));
+    _pad7.addEventListener('click', onClickCheck('7'));
+    _pad8.addEventListener('click', onClickCheck('8'));
+    _pad9.addEventListener('click', onClickCheck('9'));
+    _pad0.addEventListener('click', onClickCheck('0'));
+    _padClear.addEventListener('click', onClickCheck('C'));
+    _padEqual.addEventListener('click', onClickCheck('='));
+    _padMinus.addEventListener('click', onClickCheck('-'));
+    _padPlus.addEventListener('click', onClickCheck('+'));
+    _padDivision.addEventListener('click', onClickCheck('/'));
+    _padMultiply.addEventListener('click', onClickCheck('X'));
+    
+  </script>
+
+</body>
+</html>
