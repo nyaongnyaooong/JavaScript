@@ -28,6 +28,7 @@
         let guess = '';
         let countBall = 0;
         let countStrike = 0;
+        let countOut = 0;
         let log = '';
         let tryCount = 0;
 
@@ -77,8 +78,17 @@
                 } else if (triedNum.length > 9) {
                     _result.innerHTML = '실패! 정답은 ' + answer.join('');
                 } else {
-                    log += guess + ' : ' + String(countStrike) + 'S ' + String(countBall) + 'B <br/>' + String.fromCharCode(13);
+                    if (countStrike === 0 && countBall === 0) {
+                        countOut++;
+                        log += guess + ' : ' + countOut + 'OUT <br/>';
+                    } else 
+                        log += guess + ' : ' + String(countStrike) + 'S ' + String(countBall) + 'B <br/>';
+                    
                     _result.innerHTML = log;
+                    if (countOut > 2) {
+                        _result.innerHTML = '실패! 정답은 ' + answer.join('');
+                    }
+
                 }
             } 
             _numInput.focus(); //input에 커서 놓기
