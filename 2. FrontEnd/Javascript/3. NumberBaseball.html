@@ -29,6 +29,7 @@
         let countBall = 0;
         let countStrike = 0;
         let log = '';
+        let tryCount = 0;
 
         for(let i = 0; i < 10; i++) {
             numbers.push(i);
@@ -38,12 +39,8 @@
             answer.push(numbers[index]);
             numbers.splice(index, 1);
         }
-        console.log(answer);
-/*
-        _numInput.addEventListener('input', function (event) {
-            guess = event.target.value;
-        });
-*/
+        console.log(answer.join(''));
+
         _form.addEventListener('submit', (event) => {
             event.preventDefault(); //form 태그에 submit 명령시 기본적으로 새로고침을 하기때문에 이를 막음
             countStrike = 0;
@@ -74,11 +71,18 @@
                         }
                     }
                 }
-                log += String(countStrike) + '스트라이크 ' + String(countBall) + '볼 \r\n' + String.fromCharCode(13);
-                _result.textContent = log;
+                console.log(triedNum.length);
+                if (countStrike === 4) {
+                    _result.innerHTML = '정답! ' + guess;
+                } else if (triedNum.length > 9) {
+                    _result.innerHTML = '실패! 정답은 ' + answer.join('');
+                } else {
+                    log += guess + ' : ' + String(countStrike) + 'S ' + String(countBall) + 'B <br/>' + String.fromCharCode(13);
+                    _result.innerHTML = log;
+                }
             } 
-
-            console.log(String(countStrike) + '스트라이크 ' + String(countBall) + '볼');
+            _numInput.focus(); //input에 커서 놓기
+            //console.log(String(countStrike) + '스트라이크 ' + String(countBall) + '볼');
         });
 
     </script>
