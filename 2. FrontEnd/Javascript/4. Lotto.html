@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .ball {
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        margin-right: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="result">추첨 결과는?</div>
+    <div id="bonus">보너스 : </div>
+
+    <script>
+        let number = Array(45).fill().map((element, index) => index + 1);
+        let shuffle = [];
+        //피셔 예이츠 셔플 (전체 숫자 셔플)
+        while(number.length > 0) {
+            let random = Math.floor(Math.random() * number.length);
+            shuffle.push(number.splice(random, 1)[0]);
+        }
+        //console.log(shuffle);
+
+        let num7 = shuffle.slice(0, 6).sort((a, b) => a - b);
+        let bonus = shuffle[6];
+        console.log(num7, bonus);
+
+
+
+    </script>
+
+</body>
+</html>
