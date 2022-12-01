@@ -25,19 +25,44 @@
     <div id="bonus">보너스 : </div>
 
     <script>
-        let number = Array(45).fill().map((element, index) => index + 1);
-        let shuffle = [];
+        let numBox = Array(45).fill().map((element, index) => index + 1);
+        let shuffleBox = [];
         //피셔 예이츠 셔플 (전체 숫자 셔플)
-        while(number.length > 0) {
-            let random = Math.floor(Math.random() * number.length);
-            shuffle.push(number.splice(random, 1)[0]);
+        while(numBox.length > 0) {
+            let randomNum = Math.floor(Math.random() * numBox.length);
+            shuffleBox.push(numBox.splice(randomNum, 1)[0]);
         }
-        //console.log(shuffle);
+        //console.log(shuffleBox);
 
-        let num7 = shuffle.slice(0, 6).sort((a, b) => a - b);
-        let bonus = shuffle[6];
-        console.log(num7, bonus);
+        //앞에서부터 6개 뽑고 정렬
+        let draw = shuffleBox.slice(0, 6).sort((a, b) => a - b);
 
+        //7번째를 보너스 번호
+        let bonus = shuffleBox[6];
+        console.log(draw, bonus);
+
+        let _result = document.querySelector('#result');
+        let _bonus = document.querySelector('#bonus');
+        let showBall = (position, content) => {
+            let _ball = document.createElement('div');
+            _ball.className = 'ball';
+            _ball.textContent = content;
+            position.append(_ball);
+        };
+        //showBall(_result, '1');
+        for (let i = 0; i < draw.length; i++) {
+            setTimeout(() => {
+                showBall(_result, draw[i]);
+            }, (i + 1) * 1000);
+        }
+        setTimeout(() => {
+            showBall(_bonus, bonus);
+        }, 7000);
+
+        /*
+            원본 배열을 보존하면서 sort
+            shuffle.slice().sort((a, b) => a - b);
+        */
 
 
     </script>
