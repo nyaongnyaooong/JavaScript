@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>lotto</title>
     <style>
         .ball {
         display: inline-block;
@@ -43,12 +43,30 @@
 
         let _result = document.querySelector('#result');
         let _bonus = document.querySelector('#bonus');
+
         let showBall = (position, content) => {
             let _ball = document.createElement('div');
             _ball.className = 'ball';
             _ball.textContent = content;
+            if (content < 10) {
+                _ball.style.backgroundColor = 'red';
+                _ball.style.color = 'white';
+            } else if (content < 20){
+                _ball.style.backgroundColor = 'orange';
+                _ball.style.color = 'white';
+            } else if (content < 30){
+                _ball.style.backgroundColor = 'green';
+                _ball.style.color = 'white';
+            } else if (content < 40){
+                _ball.style.backgroundColor = 'blue';
+                _ball.style.color = 'white';
+            } else {
+                _ball.style.backgroundColor = 'purple';
+                _ball.style.color = 'white';
+            }
             position.append(_ball);
         };
+
         //showBall(_result, '1');
         for (let i = 0; i < draw.length; i++) {
             setTimeout(() => {
