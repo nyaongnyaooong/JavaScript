@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <script>
+        const { body } = document;
+        const { createElement } = document;
+        const $createTable = createElement('table');
+        const $result = document.createElement('div');
+        let turn = 'O'
+
+        for(let i = 0; i < 3; i++) {
+            const $tr = document.createElement('tr');
+            for(let i = 0; i < 3; i++) {
+                const $td = document.createElement('td');
+                $td.addEventListener('click', (event) => {
+                    if (event.target.innerHTML) return;
+                    console.log('clicked');
+                    if (turn === 'O') {
+                        event.target.innerHTML = turn;
+                        turn = 'X';
+                    } else {
+                        event.target.innerHTML = turn;
+                        turn = 'O';
+                    }
+                });
+                $tr.append($td);
+            }
+            $createTable.append($tr);
+        }
+
+        body.append($createTable);
+        body.append($result);
+    </script>
+</body>
+</html>
