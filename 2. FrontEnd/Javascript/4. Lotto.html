@@ -45,7 +45,7 @@
         let _bonus = document.querySelector('#bonus');
 
         let showBall = (position, content) => {
-            let _ball = document.createElement('div');
+            const _ball = document.createElement('div');
             _ball.className = 'ball';
             _ball.textContent = content;
             if (content < 10) {
