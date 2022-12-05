@@ -28,27 +28,27 @@
         const rows = [];
 
         const clickFunction = (event) => {
+
             if (event.target.innerHTML) return;
-            if (turn === 'O') {
-                event.target.innerHTML = turn;
-                turn = 'X';
-            } else {
-                event.target.innerHTML = turn;
-                turn = 'O';
-            }
-            const Winner = checkWinner(event.target);
-            console.log(Winner);
+            
+            event.target.innerHTML = turn;
+
+            let Winner = checkWinner(event.target);
             if (Winner) {
-                $table.removeEventListener('click', clickFunction);
-                if (Winner === 'O') {
-                    $result.innerHTML = 'Player1 is Winner!';
-                } else {
-                    $result.innerHTML = 'Player2 is Winner!';
+                printWinnerMessage(Winner);
+            } else {
+                const emptyCells = rows.flat().filter((element) => !element.innerHTML)
+                let computerPick = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                if (emptyCells.length) {
+                    computerPick.innerHTML = 'X';
+                    Winner = checkWinner(computerPick);
                 }
-            } else if (rows.flat().every((rows) => rows.innerHTML))
-                $result.innerHTML = 'Draw!';
+                printWinnerMessage(Winner);
+            }
+
         };
 
+        //승자 판별하여 승자가 있을 시 O X, 없을 시 false retun
         const checkWinner = (eventTarget) => {
             let rowIndex;
             let columnIndex;
@@ -85,6 +85,19 @@
                 return false;
             }            
         };
+
+        const printWinnerMessage = (Winner) => {
+            if (Winner) {
+                $table.removeEventListener('click', clickFunction);
+                if (Winner === 'O') {
+                    $result.innerHTML = 'Player1 is Winner!';
+                } else {
+                    $result.innerHTML = 'Player2 is Winner!';
+                }
+            } else if (rows.flat().every((rows) => rows.innerHTML))
+                $result.innerHTML = 'Draw!';
+        };
+
 
         for(let i = 0; i < 3; i++) {
             const $tr = document.createElement('tr');
