@@ -22,10 +22,69 @@
 	
     <script>
         const { body } = document;
-        const $createTable = document.createElement('table');
+        const $table = document.createElement('table');
         const $result = document.createElement('div');
         let turn = 'O'
         const rows = [];
+
+        const clickFunction = (event) => {
+            if (event.target.innerHTML) return;
+            if (turn === 'O') {
+                event.target.innerHTML = turn;
+                turn = 'X';
+            } else {
+                event.target.innerHTML = turn;
+                turn = 'O';
+            }
+            const Winner = checkWinner(event.target);
+            console.log(Winner);
+            if (Winner) {
+                $table.removeEventListener('click', clickFunction);
+                if (Winner === 'O') {
+                    $result.innerHTML = 'Player1 is Winner!';
+                } else {
+                    $result.innerHTML = 'Player2 is Winner!';
+                }
+            } else if (rows.flat().every((rows) => rows.innerHTML))
+                $result.innerHTML = 'Draw!';
+        };
+
+        const checkWinner = (eventTarget) => {
+            let rowIndex;
+            let columnIndex;
+
+            //클릭한 td의 좌표 찾기
+            rows.forEach((columns, ri) => {
+                columns.forEach((td, ci) => {
+                    if (td === eventTarget) {
+                        rowIndex = ri;
+                        columnIndex = ci;
+                    }
+                });
+            });
+            console.log(rowIndex, columnIndex);
+            if (
+                rows[rowIndex][0].innerHTML === rows[rowIndex][1].innerHTML && 
+                rows[rowIndex][1].innerHTML === rows[rowIndex][2].innerHTML
+                ) {
+                    return rows[rowIndex][0].innerHTML;
+            } else if (
+                rows[0][columnIndex].innerHTML === rows[1][columnIndex].innerHTML && 
+                rows[1][columnIndex].innerHTML === rows[2][columnIndex].innerHTML
+                ){
+                    return rows[0][columnIndex].innerHTML;
+            } else if (rows[1][1].innerHTML && (
+                    rows[0][0].innerHTML === rows[1][1].innerHTML && 
+                    rows[1][1].innerHTML === rows[2][2].innerHTML ||
+                    rows[0][2].innerHTML === rows[1][1].innerHTML && 
+                    rows[1][1].innerHTML === rows[2][0].innerHTML
+                )             
+            ) {
+                    return rows[1][1].innerHTML;
+            } else {
+                return false;
+            }            
+        };
 
         for(let i = 0; i < 3; i++) {
             const $tr = document.createElement('tr');
@@ -33,24 +92,16 @@
             for(let j = 0; j < 3; j++) {
                 const $td = document.createElement('td');
                 columns.push($td);
-                $td.addEventListener('click', (event) => {
-                    if (event.target.innerHTML) return;
-                    console.log('clicked');
-                    if (turn === 'O') {
-                        event.target.innerHTML = turn;
-                        turn = 'X';
-                    } else {
-                        event.target.innerHTML = turn;
-                        turn = 'O';
-                    }
-                });
+
                 $tr.append($td);
             }
             rows.push(columns);
-            $createTable.append($tr);
+            $table.append($tr);
         }
 
-        body.append($createTable);
+        $table.addEventListener('click', clickFunction);
+
+        body.append($table);
         body.append($result);
     </script>
 </body>
