@@ -12,26 +12,33 @@
 </head>
 <body>
     <script>
-    let func = (element1) => (element2) => (element3) => {
-        return element1 + element2 * element3;
-    };
+        /*
+        function classObject(number, name, nickname, age) {
+            return { number, name, nickname, age };
+        }
+        */
 
-    let array = [1, 2, 3, 4];
-    let array2 = array.map((element, index) => {
-        return element * 2;
-    });
-    console.log(array2);
-    //[2, 4, 6, 8]
+        /*
+        function ClassObject(number, name, nickname, age) {
+            this.number = number;
+            this.name = name;
+            this.nickname = nickname;
+            this.age = age;
+        } 
+        */
+       
+        class ClassObject {
+            constructor(number, name, nickname, age) {
+                this.number = number;
+                this.name = name;
+                this.nickname = nickname;
+                this.age = age;
+            }
+        }
 
-    let array3;
-    
-    array.forEach((element, index) => {
-        array3 = element * index;
-        //element a, b, c, d
-        //index 0, 1, 2, 3
-    });
 
-    console.log(array3);
+        let student1 = new ClassObject(1, 'jaeahJeong', 'refine', 31);
+        console.log(student1.name);
 
 
 
