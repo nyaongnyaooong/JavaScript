@@ -68,20 +68,66 @@
 
         const $message = document.getElementById('message')
 
+        const screenList = [$startScreen, $gameMenu, $battleMenu];
+
         class Game {
             constructor(name) {
-                this.monster;
-                this.hero = new Hero(this, name)
                 this.monsterList = [
                     { name: '슬라임', hp: '25', att: '10' },
                     { name: '스켈레톤', hp: '50', att: '15' },
                     { name: '마왕', hp: '500', att: '100' },
                 ];
-            }
-            start() {}
-        }
-        $gameMenu.addEventListener('submit', )
+                this.monster = new Monster(this);
+                this.hero = new Hero(this, name)
 
+
+                this.start();
+            }
+
+            start() {
+                //이벤트 리스너 생성
+                $gameMenu.addEventListener('submit', this.gameBehaviorClicked);
+                $battleMenu.addEventListener('submit', this.battleBehaviorClicked);
+                //게임 메뉴로 이동
+                this.screenChange($gameMenu);
+                //location.replace(navigate('https://etk.srail.kr/cmc/01/selectLoginForm.do');
+            }
+
+            screenChange(toWhichScreen) {
+                screenList.forEach((element, index) => {
+                    if (toWhichScreen === $gameMenu && element === $gameMenu) {
+                        $heroName.innerHTML = this.hero.name;
+                        $heroLevel.innerHTML = this.hero.level + 'lv';
+                        $heroHP.innerHTML = 'HP : ' + this.hero.hp + '/' + this.hero.maxHP;
+                        $heroXP.innerHTML = 'XP : ' + this.hero.xp + '/' + this.hero.level * 15;
+                        $heroATT.innerHTML = 'ATT : ' + this.hero.att;
+                        element.style.display = 'block';
+                    } else if (toWhichScreen ===  element ) {
+                        console.log(toWhichScreen);
+                        element.style.display = 'block';
+                    }
+                    else {
+                        element.style.display = 'none';
+                    }
+                });
+            }
+
+            gameBehaviorClicked = (event) => {
+                event.preventDefault();
+                if (event.target['menuInput'].value === '1') {
+                    this.screenChange($battleMenu);
+                } else if (event.target['menuInput'].value === '2') {
+        
+                } else if (event.target['menuInput'].value === '3') {
+                    console.log(this);
+                }
+            }
+
+            battleBehaviorClicked(event) {
+                event.preventDefault();
+            }
+        }
+        
 
         class Hero {
             constructor(game, name) {
@@ -89,6 +135,7 @@
                 this.name = name;
                 this.level = 1;
                 this.maxHP = 100;
+                this.hp = 100;
                 this.xp = 0;
                 this.att = 10;
             }
@@ -102,12 +149,21 @@
             }
         }
 
+        class Monster {
+            constructor(game) {
+                this.game = game;
+                let monster = [...game.monsterList];
+                this.monster = monster[(Math.random() * monster.length)];
+                //this.monster = game.monsterList[Math.floor(Math.random() * game.monsterList.length)];
+            }
+        }
+
         let game;
         $startScreen.addEventListener('submit', (event) => {    //시작 버튼 누르면
             event.preventDefault();
             const name = event.target['nameInput'].value;   //주인공 이름 입력 받기
             game = new Game(name);
-
+/*
             $startScreen.style.display = 'none';
             $gameMenu.style.display = 'block';
             $heroName.textContent = name;
@@ -115,10 +171,9 @@
             $heroHP.innerHTML = 'HP: ' + heroStat.hp;
             $heroXP.innerHTML = 'XP: ' + heroStat.xp + '/' + heroStat.level * 15;
             $heroATT.innerHTML = 'ATT: ' + heroStat.att;
-
-            
+*/
         });
-
+/*
         $gameMenu.addEventListener('submit', (event) => {
             event.preventDefault();
             const input = event.target['menuInput'].value;
@@ -151,7 +206,7 @@
             
         });
 
-
+*/
 
     </script>
     
