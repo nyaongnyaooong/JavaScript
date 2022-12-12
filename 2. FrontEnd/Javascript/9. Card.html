@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Reversal</title>
+    <style>
+        .card {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 20px;
+            width: 70px;
+            height: 100px;
+            perspective: 140px;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front {
+            background: navy;
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 1px solid black;
+            backface-visibility: hidden;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="wrapper"></div>
+
+    <script>
+        const $wrapper = document.getElementById('wrapper');
+
+        let colors = ['red', 'orange', 'yellow']; //, 'green', 'white', 'pink', 'purple', 'black'];
+        colors = colors.concat(colors);
+        const total = colors.length;
+        let clickable = false;
+        let completed = [];
+        let clicked = [];
+
+        function shuffle(array) {
+            const tempArray = [...array];
+            let shuffledArray = [];
+            for (let i = 0; tempArray.length > 0; i++) {
+                const randomIndex = Math.floor(Math.random() * tempArray.length);
+                const splicedElement = tempArray.splice(randomIndex, 1);
+                shuffledArray = shuffledArray.concat(splicedElement);
+            }
+            return shuffledArray;
+        }
+
+        function createCard(color) {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const cardInner = document.createElement('div');
+            cardInner.className = 'card-inner';
+            
+            const cardFront = document.createElement('div');
+            cardFront.className = 'card-front';
+            
+            const cardBack = document.createElement('div');
+            cardBack.className = 'card-back';
+            cardBack.style.backgroundColor = color;
+
+            cardInner.append(cardFront);
+            cardInner.append(cardBack);
+            card.append(cardInner);
+            //card > cardInner > cardFront/cardBack
+
+            return card;
+        }
+        
+        function startGame() {
+            const shuffledColor = shuffle(colors);
+            for (let i = 0; i < total; i++) {
+                const card = createCard(shuffledColor[i]);
+                card.addEventListener('click', onClickCard);
+                $wrapper.append(card);
+            }
+            document.querySelectorAll('.card').forEach((element, index) => {
+                setTimeout(() => {
+                    element.classList.add('flipped');
+                }, 500 + index * 50)
+            });
+
+            setTimeout(() => {
+                document.querySelectorAll('.card').forEach((element, index) => {
+                    element.classList.remove('flipped');
+                });
+                clickable = true;
+            }, 2000);
+        }
+
+        function onClickCard() {
+            if (!clickable || completed.includes(this) || clicked[0] === this) {
+                return;
+            }
+            clickable = false;
+            this.classList.toggle('flipped');
+            clicked.push(this);
+            if (clicked.length < 2) {
+                clickable = true;
+                return;
+            }
+
+            const firstBackColor = clicked[0].querySelector('.card-back').style.backgroundColor
+            const secondBackColor = clicked[1].querySelector('.card-back').style.backgroundColor
+
+            if (firstBackColor === secondBackColor) {
+                completed = completed.concat(clicked);
+                clicked = [];
+                clickable = true;
+                return
+            } else {
+                setTimeout(() => {
+                    clicked[0].classList.toggle('flipped');
+                    clicked[1].classList.toggle('flipped');
+                    clicked = [];
+                    clickable = true;
+                }, 500);
+                    //clicked[0].classList.remove('flipped');
+                    //clicked[1].classList.remove('flipped');
+            }
+
+            if (completed.length === total) {
+                setTimeout(() => {
+                    alert('축하합니다!');
+                    resetGame();
+                }, 500);
+            }
+            return;
+        }
+
+        function resetGame() {
+            clickable = false;
+            $wrapper.innerHTML = '';
+            completed = [];
+            clicked = [];
+            startGame();
+        }
+
+        startGame();
+        
+
+
+    </script>
+</body>
+</html>
