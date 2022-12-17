@@ -40,7 +40,7 @@
     <script>
         const $tbody = document.querySelector('#table tbody');
         const $result = document.querySelector('#result');
-        let table = [];
+
         const row = 10;
         const cell = 10;
         const mine = 10;
@@ -68,17 +68,37 @@
         }
 
         function drawTable () {
+            const arrTr = [];
             for (let i = 0; i < 10; i++) {
+                const arrTd = [];
                 const $tr = document.createElement('tr');
-                table.push($tr);
-
                 for (let j = 0; j < 10; j++) {
                     const $td = document.createElement('td');
+                    $td.addEventListener('click', clickedLeft);
+                    $td.addEventListener('contextmenu', clickedRight);
+                    arrTd.push($td);
                     $tr.append($td);
-                    table[$tr].push($tr);
                 }
+                arrTr.push($tr);
+                $tbody.append($tr);
+            }
+            return arrTr;
+        }
+
+        function clickedLeft(event) {
+            event.target.classList.add('opened');
+        }
+
+        function clickedRight(event) {
+            event.preventDefault();
+            event.target.classList.add('flag');
+            console.log(event.target.className);
+            if (event.target.classList.contains('flag')) {
+                alert('1');
             }
         }
+
+        const $table = drawTable ();
         plantMine ();
     </script>
 </body>
