@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MineSweeper</title>
+    
+    <style>
+        table { border-collapse: collapse; }
+        td {
+            border: 1px solid #bbb;
+            text-align: center;
+            line-height: 20px;
+            width: 20px;
+            height: 20px;
+            background: #888;
+        }
+        td.opened { background: white; }
+        td.flag { background: red; }
+        td.question { background: orange; }
+    </style>
+</head>
+<body>
+    <form id="form">
+        <input placeholder="가로 줄" id="row" size="5" />
+        <input placeholder="세로 줄" id="cell" size="5" />
+        <input placeholder="지뢰" id="mine" size="5" />
+        <button>생성</button>
+    </form>
+
+    <div id="timer">0초</div>
+
+    <table id="table">
+    <tbody></tbody>
+    </table>
+
+    <div id="result"></div>
+
+    <script>
+        const $tbody = document.querySelector('#table tbody');
+        const $result = document.querySelector('#result');
+        let table = [];
+        const row = 10;
+        const cell = 10;
+        const mine = 10;
+        const code = {
+            normal: -1,
+            question: -2,
+            flag: -3,
+            question_mine: -4,
+            flag_mine: -5,
+            mine : -6,
+            opened : 0,
+        };
+
+        function plantMine () {
+            const candidate = Array(row * cell).fill().map((element, index) => {
+                return index;
+            });
+            let shuffle = [];
+            for(let i=0; i<10; i++) {
+                const randomIndex = Math.floor(Math.random() * candidate.length);
+                const splicedArray = candidate.splice(randomIndex, 1);
+                shuffle = shuffle.concat(splicedArray);
+            }
+            console.log(shuffle);
+        }
+
+        function drawTable () {
+            for (let i = 0; i < 10; i++) {
+                const $tr = document.createElement('tr');
+                table.push($tr);
+
+                for (let j = 0; j < 10; j++) {
+                    const $td = document.createElement('td');
+                    $tr.append($td);
+                    table[$tr].push($tr);
+                }
+            }
+        }
+        plantMine ();
+    </script>
+</body>
+</html>
