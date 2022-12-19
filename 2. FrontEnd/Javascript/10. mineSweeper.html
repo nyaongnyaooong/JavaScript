@@ -54,39 +54,121 @@
             opened : 0,
         };
 
-        function plantMine () {
-            const candidate = Array(row * cell).fill().map((element, index) => {
-                return index;
-            });
-            let shuffle = [];
-            for(let i=0; i<10; i++) {
-                const randomIndex = Math.floor(Math.random() * candidate.length);
-                const splicedArray = candidate.splice(randomIndex, 1);
-                shuffle = shuffle.concat(splicedArray);
-            }
-            console.log(shuffle);
-        }
 
-        function drawTable () {
+        function drawTable(row, column) {
+            //row x column table 생성, 해당 document element 값을 array형태로 return
+            //const table = new Array(row).fill([]);
             const arrTr = [];
-            for (let i = 0; i < 10; i++) {
+            const table = Array(10).fill(Array(0));
+            //console.log(table[0]);
+            for (let i = 0; i < row; i++) {
                 const arrTd = [];
+                //console.log(arrTd);
                 const $tr = document.createElement('tr');
-                for (let j = 0; j < 10; j++) {
+                for (let j = 0; j < column; j++) {
                     const $td = document.createElement('td');
+
+                    $td.addEventListener('dragstart drop', (event) => {
+                        event.preventDefault();
+                    });
                     $td.addEventListener('click', clickedLeft);
                     $td.addEventListener('contextmenu', clickedRight);
+                    
                     arrTd.push($td);
                     $tr.append($td);
+                    table[i].push($td);
                 }
-                arrTr.push($tr);
+                //table[i].push(arrTd);
+                arrTr.push(arrTd);
                 $tbody.append($tr);
             }
             return arrTr;
         }
 
+
+        function setTable(row, column) {
+
+            //0으로 채운 1차열 배열
+            const arrInfo = new Array(row * column).fill(0);
+            //0 ~ n으로 채운 1차열 길이 n의 배열
+            const candidate = new Array(row * column).fill().map((element, index) => {
+                return index;
+            });
+
+            //랜덤으로 지뢰설정
+            for(let i = 0; i < 10; i++) {
+                const randomIndex = Math.floor(Math.random() * candidate.length);
+                const splicedArray = candidate.splice(randomIndex, 1);
+                arrInfo[splicedArray[0]] = code.mine;
+            }
+
+            //1->2차원 배열 변환
+            const arrTable = new Array(row).fill().map((element, index) => {
+                const arrayColumn = [];
+                for(let i = index * column; i < (index + 1) * column; i++) {
+                    arrayColumn.push(arrInfo[i]);
+                }
+                return arrayColumn;
+            });
+
+            //지뢰 주변에 숫자추가
+            
+            for (let i = 0; i < row; i++) {
+                for (let j = 0; j < column; j++) {
+                    if (arrTable[i][j] === code.mine) {
+                        setMineNumber(arrTable, i, j, row, column);
+                    }
+                }
+            }
+            
+            return arrTable;
+        }
+
+
+        function setMineNumber(array, index1, index2, row, column) {
+
+            //좌상
+            if(index1 - 1 > -1 && index2 - 1 > -1 && array[index1 - 1][index2 - 1] !== code.mine) {
+                array[index1 - 1][index2 - 1]++; 
+            }
+            //상
+            if(index1 - 1 > -1 && array[index1 - 1][index2] !== code.mine) {
+                array[index1 - 1][index2]++; 
+            }
+            //우상
+            if(index1 - 1 > -1 && index2 + 1 < column && array[index1 - 1][index2 + 1] !== code.mine) {
+                array[index1 - 1][index2 + 1]++; 
+            }
+            //좌
+            if(index2 - 1 > -1 && array[index1][index2 - 1] !== code.mine) {
+                array[index1][index2 - 1]++; 
+            }
+            //우
+            if(index2 + 1 < column && array[index1][index2 + 1] !== code.mine) {
+                array[index1][index2 + 1]++; 
+            }
+            //좌하
+            if(index1 + 1 < row && index2 - 1 > -1 && array[index1 + 1][index2 - 1] !== code.mine) {
+                array[index1 + 1][index2 - 1]++; 
+            }
+            //하
+            if(index1 + 1 < row && array[index1 + 1][index2] !== code.mine) {
+                array[index1 + 1][index2]++; 
+            }
+            //우하
+            if(index1 + 1 < row && index2 + 1 < column && array[index1 + 1][index2 + 1] !== code.mine) {
+                array[index1 + 1][index2 + 1]++; 
+            }
+        }
+
         function clickedLeft(event) {
-            event.target.classList.add('opened');
+            if (event.target.classList.contains('opened')) {
+                return;
+            }
+            
+            event.target.classList.add('opened')
+            event.target.classList.remove('flag')
+
         }
 
         function clickedRight(event) {
@@ -98,8 +180,20 @@
             }
         }
 
-        const $table = drawTable ();
-        plantMine ();
+        const table = {
+            info: setTable(row, cell),
+            html: drawTable(row, cell),
+        }
+
+        for (let i = 0; i < row; i++) {
+            for(let j = 0; j < cell; j++) {
+                //console.log()
+                if (table.info[i][j] != 0)
+                    table.html[i][j].innerHTML = table.info[i][j];
+            }
+        }
+
+
     </script>
 </body>
 </html>

@@ -12,37 +12,65 @@
 </head>
 <body>
     <script>
-        let totalInterest;
-        let totalInput = 0;
-        const interest = [];
-        let rate = 7;
-        rate = rate / 100;
-        for(i=1; i<27; i++) {
-            let j = i * 10000;
-            totalInput += j;
-            interest.push(Math.round(j * rate * ((27 - i) * 7 - 1) / 365));
-        }
-        
-        totalInterest = interest.reduce((a, c) => a + c);
-        console.log(totalInput);
-        console.log(totalInterest);
-        console.log(totalInterest*0.846);
+        const arrayInOrder = new Array(100).fill().map((element, index) => {
+            return index;
+        });
 
-        //console.log(interest);
-/*
-        let totalinterest2;
-        const interest2 = [];
-        let rate2 = 10;
-        rate2 = rate2 / 100;
-        for(i=1; i<13; i++) {
-            let j = i * 100000;
-            interest2.push(Math.round(j * rate * (12 - i) / 12));
+        const arraySquare = new Array(10).fill(new Array(10));
+        arraySquare.forEach((element, index) => {
+            element.forEach((element2, index2) => {
+                indexInOrder = index * 10 + index2;
+                element2 = arrayInOrder[indexInOrder];
+            });
+        });
+
+        const arraySquare2 = new Array(10).fill(new Array(0));
+        let indexInOrder;
+        for(let i = 0; i < 10; i++) {
+            for(let j = 0; j < 10; j++) {
+                indexInOrder = i * 10 + j;
+                arraySquare2[i].push(arrayInOrder[indexInOrder]);
+            }
         }
-        
-        totalinterest2 = interest2.reduce((a, c) => a + c);
-        console.log(totalinterest2);
-        console.log(interest2);
+
+        const arraySquare3 = [];
+        for(let i = 0; i < 10; i++) {
+            const arrayColumn = [];
+            for(let j = 0; j < 10; j++) {
+                const indexInOrder = i * 10 + j;
+                arrayColumn.push(arrayInOrder[indexInOrder]);
+            }
+            arraySquare3.push(arrayColumn);
+        }
+
+        const arraySquare4 = new Array(10).fill().map((element, index) => {
+            const arraytemp = [];
+            for (let i = index * 10; i < index * 10 + 10; i++) {
+                arraytemp.push(arrayInOrder[i]);
+            }
+            return arraytemp;
+        });
+/*
+        console.log(arraySquare);
+        console.log(arraySquare2);
+        console.log(arraySquare3);
+        console.log(arraySquare4);
 */
+        function oneDTo2D(array, chunkSize) {
+            const twoD = [];
+            let i = 0;
+            while(i < array.length) {
+                twoD.push(array.slice(i, i + chunkSize));
+                i += chunkSize;
+            }
+            console.log(array);
+            console.log(twoD);
+            return twoD;
+        }
+
+        const twoD = oneDTo2D(arrayInOrder, 10);
+
+
     </script>
 </body>
 </html>
