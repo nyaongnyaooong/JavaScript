@@ -22,14 +22,7 @@
     </style>
 </head>
 <body>
-    <form id="form">
-        <input placeholder="가로 줄" id="row" size="5" />
-        <input placeholder="세로 줄" id="cell" size="5" />
-        <input placeholder="지뢰" id="mine" size="5" />
-        <button>생성</button>
-    </form>
 
-    <div id="timer">0초</div>
 
     <table id="table">
     <tbody></tbody>
@@ -41,9 +34,9 @@
         const $tbody = document.querySelector('#table tbody');
         const $result = document.querySelector('#result');
 
-        const row = 10;
-        const cell = 10;
-        const mine = 10;
+        const row = 11;
+        const cell = 11;
+        const mine = Math.floor(row*cell/10);
         const code = {
             normal: -1,
             question: -2,
@@ -53,32 +46,26 @@
             mine : -6,
             opened : 0,
         };
+        let table;
 
 
         function drawTable(row, column) {
             //row x column table 생성, 해당 document element 값을 array형태로 return
-            //const table = new Array(row).fill([]);
+
             const arrTr = [];
-            const table = Array(10).fill(Array(0));
-            //console.log(table[0]);
             for (let i = 0; i < row; i++) {
                 const arrTd = [];
-                //console.log(arrTd);
+
                 const $tr = document.createElement('tr');
                 for (let j = 0; j < column; j++) {
                     const $td = document.createElement('td');
-
-                    $td.addEventListener('dragstart drop', (event) => {
-                        event.preventDefault();
-                    });
-                    $td.addEventListener('click', clickedLeft);
-                    $td.addEventListener('contextmenu', clickedRight);
+                    $td.addEventListener('click', clickedLeft(i, j));
+                    $td.addEventListener('contextmenu', clickedRight(i, j));
                     
                     arrTd.push($td);
                     $tr.append($td);
-                    table[i].push($td);
                 }
-                //table[i].push(arrTd);
+
                 arrTr.push(arrTd);
                 $tbody.append($tr);
             }
@@ -96,7 +83,7 @@
             });
 
             //랜덤으로 지뢰설정
-            for(let i = 0; i < 10; i++) {
+            for(let i = 0; i < mine; i++) {
                 const randomIndex = Math.floor(Math.random() * candidate.length);
                 const splicedArray = candidate.splice(randomIndex, 1);
                 arrInfo[splicedArray[0]] = code.mine;
@@ -124,6 +111,44 @@
             return arrTable;
         }
 
+        function discriminateCell(maxRow, maxColum, indexRow, indexColum) {
+                const array = new Array(8).fill(false);
+
+                //좌상
+                if(indexRow - 1 > -1 && indexColum - 1 > -1) {
+                    array[0] = true;
+                }
+                //상
+                if(indexRow - 1 > -1) {
+                    array[1] = true;
+                }
+                //우상
+                if(indexRow - 1 > -1 && indexColum + 1 < column) {
+                    array[2] = true;
+                }
+                //좌
+                if(indexColum - 1 > -1) {
+                    array[3] = true;
+                }
+                //우
+                if(indexColum + 1 < column) {
+                    array[4] = true;
+                }
+                //좌하
+                if(indexRow + 1 < row && indexColum - 1 > -1) {
+                    array[5] = true;
+                }
+                //하
+                if(indexRow + 1 < row) {
+                    array[6] = true;
+                }
+                //우하
+                if(indexRow + 1 < row && indexColum + 1 < column) {
+                    array[7] = true;
+                }
+
+                return array;
+        }
 
         function setMineNumber(array, index1, index2, row, column) {
 
@@ -161,38 +186,115 @@
             }
         }
 
-        function clickedLeft(event) {
-            if (event.target.classList.contains('opened')) {
+        function clickedLeft(indexRow, indexColum) {
+            return function () {
+                if (table.html[indexRow][indexColum].classList.contains('opened')) {
+                    return;
+                }
+                if (table.html[indexRow][indexColum].classList.contains('flag')) {
+                    return;
+                }
+                if (table.html[indexRow][indexColum].classList.contains('question')) {
+                    return;
+                }
+                
+                table.html[indexRow][indexColum].classList.add('opened');
+                if (table.info[indexRow][indexColum] > 0) {
+                    table.html[indexRow][indexColum].innerHTML = table.info[indexRow][indexColum];
+                } else if (table.info[indexRow][indexColum] === -6) {
+                    table.html[indexRow][indexColum].innerHTML = 'B';
+                    alert('GG');
+                }
+
+                if (document.querySelectorAll('.opened').length > row * cell - mine - 1) {
+                    for (let i = 0; i < row; i++) {
+                        for(let j = 0; j < cell; j++) {
+                            if (table.info[i][j] > 0) {
+                                table.html[i][j].innerHTML = table.info[i][j];
+                            } else if (table.info[i][j] < 0) {
+                                table.html[i][j].innerHTML = 'B';
+                            }
+                        }
+                    }
+                    alert('WIN');
+                }
+
+                //좌상
+                if (table.info[indexRow][indexColum] === 0) {
+                    if(indexRow - 1 > -1 && indexColum - 1 > -1) {
+                        clickedLeft(indexRow - 1, indexColum - 1)(); 
+                    }
+                    //상
+                    if(indexRow - 1 > -1) {
+                        clickedLeft(indexRow - 1, indexColum)(); 
+                    }
+                    //우상
+                    if(indexRow - 1 > -1 && indexColum + 1 < cell) {
+                        clickedLeft(indexRow - 1, indexColum + 1)(); 
+                    }
+                    //좌
+                    if(indexColum - 1 > -1) {
+                        clickedLeft(indexRow, indexColum - 1)(); 
+                    }
+                    //우
+                    if(indexColum + 1 < cell) {
+                        clickedLeft(indexRow, indexColum + 1)(); 
+                    }
+                    //좌하
+                    if(indexRow + 1 < row && indexColum - 1 > -1) {
+                        clickedLeft(indexRow + 1, indexColum - 1)(); 
+                    }
+                    //하
+                    if(indexRow + 1 < row) {
+                        clickedLeft(indexRow + 1, indexColum)(); 
+                    }
+                    //우하
+                    if(indexRow + 1 < row && indexColum + 1 < cell) {
+                        clickedLeft(indexRow + 1, indexColum + 1)(); 
+                    }
+                }
+            };
+
+        }
+
+        function clickedRight(indexRow, indexColum) {
+            return function () {
+                event.preventDefault();
+                if (event.target.classList.contains('opened')) {
+                    return;
+                }
+                table.html[indexRow][indexColum].innerHTML = '';
+
+                if (event.target.classList.contains('flag')) {
+                    event.target.classList.remove('flag');
+                    event.target.classList.add('question');
+                    table.html[indexRow][indexColum].innerHTML = '?';
+                    return;
+                }
+                if (event.target.classList.contains('question')) {
+                    event.target.classList.remove('question');
+                    return;
+                }
+                event.target.classList.add('flag');
+                table.html[indexRow][indexColum].innerHTML = '🏴';
+            }
+
+
+        }
+
+        function flipTable(indexRow, indexColum) {
+            if (table.html[indexRow][indexColum].classList.contains('opened')) {
                 return;
             }
-            
-            event.target.classList.add('opened')
-            event.target.classList.remove('flag')
 
+
+            arrayHTML[i][j].innerHTML = arrayInfo[i][j];
         }
 
-        function clickedRight(event) {
-            event.preventDefault();
-            event.target.classList.add('flag');
-            console.log(event.target.className);
-            if (event.target.classList.contains('flag')) {
-                alert('1');
-            }
-        }
-
-        const table = {
+        table = {
             info: setTable(row, cell),
             html: drawTable(row, cell),
         }
-
-        for (let i = 0; i < row; i++) {
-            for(let j = 0; j < cell; j++) {
-                //console.log()
-                if (table.info[i][j] != 0)
-                    table.html[i][j].innerHTML = table.info[i][j];
-            }
-        }
-
 
     </script>
 </body>
