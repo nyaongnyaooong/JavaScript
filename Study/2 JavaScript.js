@@ -47,6 +47,18 @@ array.shift();
     arr.shift();
     //a가 제거
 
+
+배열 n~m까지 요소 추출(복사)
+array.slice(START, END)
+    
+    let arr = ['a', 'b', 'c', 'd', 'e']
+    arr2 = arr.slice(1, 3);
+    //b, c
+
+    let arr = ['a', 'b', 'c', 'd', 'e']
+    arr2 = arr.slice(1, -1);    //뒤에서 부터 1
+    //b, c, d
+
     
 배열 중간 요소 제거 및 추가
 array.splice(POSITION, NUMBER, ELEMENT)
@@ -85,17 +97,6 @@ array.lastindexof(ELEMENT)
     arr.lastindexof('d');
     //-1
 
-
-배열 n~m까지 요소 추출
-array.slice(START, END)
-    
-    let arr = ['a', 'b', 'c', 'd', 'e']
-    arr2 = arr.slice(1, 3);
-    //b, c
-
-    let arr = ['a', 'b', 'c', 'd', 'e']
-    arr2 = arr.slice(1, -1);    //뒤에서 부터 1
-    //b, c, d
 
 
 
@@ -243,6 +244,7 @@ var와 let const의 차이
 var는 함수 스코프
 let/const는 블록 스코프
 
+ex)
     function func() {
         var v = 1;
         let l = 1;
@@ -264,6 +266,7 @@ let/const는 블록 스코프
 타이머
 setTimeout(() => {}, Time);
 
+ex)
     setTimeout(() => {
         console.log('1초후에 실행됩니다.')
     }, 1000);
@@ -271,6 +274,7 @@ setTimeout(() => {}, Time);
 일정 주기로 반복
 setInterval(() => {}, Time);
 
+ex)
     setInterval(() => {
         console.log('1초마다 반복됩니다.')
     }, 1000);
@@ -278,6 +282,7 @@ setInterval(() => {}, Time);
 타이머와 반복 타이머를 제거
 clearTimeout, clearInterval
 
+ex)
     timer1 = setTimeout(() => {
         console.log('1초후에 실행됩니다.')
     }, 1000);
@@ -300,6 +305,7 @@ Class 추가 제거 변경
 아래 링크 참조
 https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
     
+ex)
     const {body, head} = document;
     //const body = document.body;
     //const head = document.head;
@@ -330,6 +336,7 @@ https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Destruc
 이벤트 버블링 <-> 이벤트 캡쳐링 (잘 안씀)
 자식 태그에서 일어난 이벤트 리스너가 부모태그에도 일어남
 
+ex)
     <table id="table">
         <tr>
             <td id="td">
@@ -356,6 +363,67 @@ https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Operators/Destruc
 
     td에서 일어난 이벤트 리스너가 부모태그인 tr, table에도 일어남
 
+table에서 row, column 값 알아내기
+
+ex)
+    const $td =  document.querySelector('#td');
+
+    $td.addEventListener('click', onClickFunction);
+
+    function onClickFunction() {
+        const rowIndex = event.target.parentNode.rowIndex;
+        const cellIndex = event.target.cellIndex;
+        //event.target => td를 의미
+        //event.target.parentNode => tr을 의미
+        //tr의 rowIndex 매서드와 td의 cellIndex에 각각의 위치 값이 들어가 있다
+    }
+
+optional chaining
+배열이나 객체에서 해당 값이 undefined일 경우 하위 값에 접근할지 말지 결정하는 연산자
+
+ex)
+    const a = {
+        b: 1,
+        c: {
+            e: 2,
+        },
+        d: 3,
+    };
+
+    a.b;    //1
+    a.f     //undefined
+    a.f.g   //error
+    //undefined에 접근하면 에러가 난다
+    a.f?.g  //undefined
+
+&& 연산자와 || 연산자 ??
+a && b; //a가 false면 b를 실행하지 않음
+a || b; //a가 false면 b를 실행함
+a ?? b; //||와 동일하나 0은 false로 취급하지 않음
+
+ex)1
+    let effect = 0;
+    const compare = 'message';
+    
+    !compare && effect++;
+    !compare || effect--;
+
+    console.log(effect);
+    //-1
+
+ex)2
+    let variable = 1;   //true
+    let effect = variable && 2; //variable이 true이므로 2가 들어감, false면 variable이 들어감
+    console.log(effect);    //2
+
+    variable = 0;
+    effect = variable || 2; //variable이 false이므로 2가 들어감, true면 variable이 들어감
+    console.log(effect);    //2
+
+    effect = variable ?? 2; //variable이 0이므로 true로 취급하여 2가 아닌 variable이 들어감
+    console.log(effect);    //0
+
+
 이벤트 버블링을 막음
 event.stopPropagtion();
 
@@ -363,6 +431,7 @@ event.stopPropagtion();
 태그의 기본동작을 막음
 event.preventDefault();
 
+ex)
     <div id="main">
 
     </div>
@@ -374,10 +443,10 @@ event.preventDefault();
         });
 
 
-
 배열의 평탄화
 array.flat(depth)
 
+ex)
     array = [1, 2, [3, 4, [5]]];
     array.flat();
     //[1, 2, 3, 4, [5]]
@@ -387,6 +456,7 @@ array.flat(depth)
 배열의 내부 요소가 주어지는 판별 함수를 통과하는지 테스트
 array.every((element) => {CompareFunction});
 
+ex)
     array = [1, 2, 3, 4, 5];
     array.every((element) => element < 6);
     //true
@@ -397,13 +467,15 @@ array.every((element) => {CompareFunction});
 이를 변수로 선언했을 때 해당 값이 아닌 해당 주소가 들어가여 참조가 되지만
 참조가 아닌 완전히 동일한 배열이나 객체를 또다시 선언하고 싶을 경우 얕은 복사 혹은 경우에 따라 깊은 복사를 사용한다
 
-    //얕은 복사
+ex)
     const array = [[0, 1], [1, 2]];
     let a = array[0];
     a[0] = 1;
     console.log(array[0][0]);
     // 1
-    a = [...array[0]];
+    
+    a = [...array[0]];  //얕은 복사
+    //a = array[0].concat();  //얕은 복사
     a[0] = 2;
     console.log(array[0][0], a[0]);
     // 1, 2
@@ -412,12 +484,15 @@ array.every((element) => {CompareFunction});
     //깊은 복사의 경우 구글링하여 라이브러리 사용
 
 
+
+
 클래스
 class Object {
     constructor() {
     }
 }
 
+ex)
     class AddHuman {
         constructor(number, name, age, gender) {
             this.number = number;
