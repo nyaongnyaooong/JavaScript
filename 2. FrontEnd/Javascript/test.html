@@ -12,64 +12,13 @@
 </head>
 <body>
     <script>
-        const arrayInOrder = new Array(100).fill().map((element, index) => {
-            return index;
-        });
+        let effect = 0;
+        const compare = 'message';
+        
+        !compare && effect++;
+        !compare || effect--;
 
-        const arraySquare = new Array(10).fill(new Array(10));
-        arraySquare.forEach((element, index) => {
-            element.forEach((element2, index2) => {
-                indexInOrder = index * 10 + index2;
-                element2 = arrayInOrder[indexInOrder];
-            });
-        });
-
-        const arraySquare2 = new Array(10).fill(new Array(0));
-        let indexInOrder;
-        for(let i = 0; i < 10; i++) {
-            for(let j = 0; j < 10; j++) {
-                indexInOrder = i * 10 + j;
-                arraySquare2[i].push(arrayInOrder[indexInOrder]);
-            }
-        }
-
-        const arraySquare3 = [];
-        for(let i = 0; i < 10; i++) {
-            const arrayColumn = [];
-            for(let j = 0; j < 10; j++) {
-                const indexInOrder = i * 10 + j;
-                arrayColumn.push(arrayInOrder[indexInOrder]);
-            }
-            arraySquare3.push(arrayColumn);
-        }
-
-        const arraySquare4 = new Array(10).fill().map((element, index) => {
-            const arraytemp = [];
-            for (let i = index * 10; i < index * 10 + 10; i++) {
-                arraytemp.push(arrayInOrder[i]);
-            }
-            return arraytemp;
-        });
-/*
-        console.log(arraySquare);
-        console.log(arraySquare2);
-        console.log(arraySquare3);
-        console.log(arraySquare4);
-*/
-        function oneDTo2D(array, chunkSize) {
-            const twoD = [];
-            let i = 0;
-            while(i < array.length) {
-                twoD.push(array.slice(i, i + chunkSize));
-                i += chunkSize;
-            }
-            console.log(array);
-            console.log(twoD);
-            return twoD;
-        }
-
-        const twoD = oneDTo2D(arrayInOrder, 10);
-
+        console.log(effect);
 
     </script>
 </body>

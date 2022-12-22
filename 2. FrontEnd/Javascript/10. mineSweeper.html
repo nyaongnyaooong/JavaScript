@@ -36,7 +36,7 @@
 
         const row = 11;
         const cell = 11;
-        const mine = Math.floor(row*cell/10);
+        const mine = Math.floor(row*cell/6 );
         const code = {
             normal: -1,
             question: -2,
@@ -153,35 +153,35 @@
         function setMineNumber(array, index1, index2, row, column) {
 
             //좌상
-            if(index1 - 1 > -1 && index2 - 1 > -1 && array[index1 - 1][index2 - 1] !== code.mine) {
+            if(array[index1 - 1]?.[index2 - 1] != code.mine && array[index1 - 1]?.[index2 - 1] !== undefined) {
                 array[index1 - 1][index2 - 1]++; 
             }
             //상
-            if(index1 - 1 > -1 && array[index1 - 1][index2] !== code.mine) {
+            if(array[index1 - 1]?.[index2] !== code.mine && array[index1 - 1]?.[index2] !== undefined) {
                 array[index1 - 1][index2]++; 
             }
             //우상
-            if(index1 - 1 > -1 && index2 + 1 < column && array[index1 - 1][index2 + 1] !== code.mine) {
+            if(array[index1 - 1]?.[index2 + 1] !== code.mine && array[index1 - 1]?.[index2 + 1] !== undefined) {
                 array[index1 - 1][index2 + 1]++; 
             }
             //좌
-            if(index2 - 1 > -1 && array[index1][index2 - 1] !== code.mine) {
+            if(array[index1][index2 - 1] !== code.mine && array[index1][index2 - 1] !== undefined) {
                 array[index1][index2 - 1]++; 
             }
             //우
-            if(index2 + 1 < column && array[index1][index2 + 1] !== code.mine) {
+            if(array[index1][index2 + 1] !== code.mine && array[index1][index2 + 1] !== undefined) {
                 array[index1][index2 + 1]++; 
             }
             //좌하
-            if(index1 + 1 < row && index2 - 1 > -1 && array[index1 + 1][index2 - 1] !== code.mine) {
+            if(array[index1 + 1]?.[index2 - 1] !== code.mine && array[index1 + 1]?.[index2 - 1] !== undefined) {
                 array[index1 + 1][index2 - 1]++; 
             }
             //하
-            if(index1 + 1 < row && array[index1 + 1][index2] !== code.mine) {
+            if(array[index1 + 1]?.[index2] !== code.mine && array[index1 + 1]?.[index2] !== undefined) {
                 array[index1 + 1][index2]++; 
             }
             //우하
-            if(index1 + 1 < row && index2 + 1 < column && array[index1 + 1][index2 + 1] !== code.mine) {
+            if(array[index1 + 1]?.[index2 + 1] !== code.mine && array[index1 + 1]?.[index2 + 1] !== undefined) {
                 array[index1 + 1][index2 + 1]++; 
             }
         }
@@ -203,7 +203,9 @@
                     table.html[indexRow][indexColum].innerHTML = table.info[indexRow][indexColum];
                 } else if (table.info[indexRow][indexColum] === -6) {
                     table.html[indexRow][indexColum].innerHTML = 'B';
-                    alert('GG');
+                    setTimeout(() => {
+                        alert('GG');
+                    }, 0);
                 }
 
                 if (document.querySelectorAll('.opened').length > row * cell - mine - 1) {
@@ -216,9 +218,12 @@
                             }
                         }
                     }
-                    alert('WIN');
+                    setTimeout(() => {
+                        alert('WIN');
+                    }, 0);
                 }
 
+ 
                 //좌상
                 if (table.info[indexRow][indexColum] === 0) {
                     if(indexRow - 1 > -1 && indexColum - 1 > -1) {
@@ -263,6 +268,7 @@
                 if (event.target.classList.contains('opened')) {
                     return;
                 }
+                table.html[indexRow][indexColum].style.fontSize = '14px';
                 table.html[indexRow][indexColum].innerHTML = '';
 
                 if (event.target.classList.contains('flag')) {
@@ -276,6 +282,7 @@
                     return;
                 }
                 event.target.classList.add('flag');
+                table.html[indexRow][indexColum].style.fontSize = '12px';
                 table.html[indexRow][indexColum].innerHTML = '🏴';
             }
 

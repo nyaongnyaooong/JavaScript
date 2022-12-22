@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2048</title>
+  <style>
+    #table { border-collapse: collapse; user-select: none; }
+    #table td {
+      border: 10px solid #bbada0; width: 116px; height: 128px;
+      font-size: 50px; font-weight: bold; text-align: center;
+    }
+    #score { user-select: none; }
+    .color-2 { background-color: #eee4da; color: #776e65;}
+    .color-4 { background-color: #eee1c9; color: #776e65;}
+    .color-8 { background-color: #f3b27a; color: 'white';}
+    .color-16 { background-color: #f69664; color: 'white';}
+    .color-32 { background-color: #f77c5f; color: 'white';}
+    .color-64 { background-color: #f75f3b; color: 'white';}
+    .color-128 { background-color: #edd073; color: #776e65;}
+    .color-256 { background-color: #edcc62; color: #776e65;}
+    .color-512 { background-color: #edc950; color: #776e65;}
+    .color-1024 { background-color: #edc53f; color: #776e65;}
+    .color-2048 { background-color: #edc22e; color: #776e65;}
+  </style>
+</head>
+<body>
+  <table id="table"></table>
+  <div id="score">0</div>
+
+  <script>
+      const $table = document.querySelector('#table');
+      const $score = document.querySelector('#score');
+      const tableSize = 4;
+
+      function tdColor(element) {
+        if (element.innerHTML === '2') {
+          element.classList = 'color-2';
+        } else if (element.innerHTML === '4') {
+          element.classList = 'color-4';
+        } else if (element.innerHTML === '8') {
+          element.classList = 'color-8';
+        } else if (element.innerHTML === '16') {
+          element.classList = 'color-16';
+        } else if (element.innerHTML === '32') {
+          element.classList = 'color-32';
+        } else if (element.innerHTML === '64') {
+          element.classList = 'color-64';
+        } else if (element.innerHTML === '128') {
+          element.classList = 'color-128';
+        } else if (element.innerHTML === '256') {
+          element.classList = 'color-256';
+        } else if (element.innerHTML === '512') {
+          element.classList = 'color-512';
+        } else if (element.innerHTML === '1024') {
+          element.classList = 'color-1024';
+        } else if (element.innerHTML === '2048') {
+          element.classList = 'color-2048';
+        } else {
+          element.classList = '';
+        }
+        return element;
+      }
+
+      //키입력 콜백함수
+      function f_keydown(event) {
+        let gameOverCheck = false;
+        if (event.key === 'ArrowUp') {
+          moveNumberTo('up');
+          gameOverCheck = f_makeRandomNumber();
+        } else if (event.key === 'ArrowDown') {
+          moveNumberTo('down');
+          gameOverCheck = f_makeRandomNumber();
+        } else if (event.key === 'ArrowLeft') {
+          moveNumberTo('left');
+          gameOverCheck = f_makeRandomNumber();
+        } else if (event.key === 'ArrowRight') {
+          moveNumberTo('right');
+          gameOverCheck = f_makeRandomNumber();
+        }
+        if (gameOverCheck) {
+          alert('GG');
+        }
+      };
+
+      
+      function moveNumberTo(directrion) {
+        //direction = 어느 방향으로 밀 것인가
+        let array;
+        //왼쪽 상단부부터 우측 하단부까지 td를 nodeList로 불러옴
+        const tdNodeList = document.querySelectorAll('td');
+        //nodeList를 Array로 변환
+        const tdArray = new Array(tdNodeList.length).fill().map((element, index) => {
+          return tdNodeList[index];
+        });
+/*
+        2D 배열로 변환하여 array에 넣음
+        x, y 좌표를 어떻게 설정하는가에 따라 쌓이는 위치가 바뀜
+        index가 큰 element가 index가 작은 쪽으로 이동할 예정
+        ex)1
+
+        a[0][0] a[0][1] a[0][2]   <-
+        a[1][0] a[1][1] a[1][2]   <-  미는 방향
+        a[2][0] a[2][1] a[2][2]   <-
+
+        ex)2
+
+        a[0][0] a[1][0] a[2][0]
+        a[0][1] a[1][1] a[2][1] 
+        a[0][2] a[1][2] a[2][2]
+           ↑        ↑       ↑
+                  미는 방향
+*/
+
+/*
+        0   4   8   12
+        1   5   9   13
+        2   6   10  14
+        3   7   11  15
+*/
+        if (directrion === 'up') {
+          array = new Array(tableSize).fill().map((element, index) => {
+            const tempArray = [];
+            for (let i = index; i < index + tableSize * (tableSize - 1) + 1; i = i + tableSize) {
+              tempArray.push(tdArray[i].innerHTML);
+            }
+            return tempArray;
+          });
+/*
+        3   7   11 15
+        2   6   10 14
+        1   5   9  13
+        0   4   8  12
+*/
+        } else if (directrion === 'down') {
+          array = new Array(tableSize).fill().map((element, index) => {
+            const tempArray = [];
+            for (let i = index + tableSize * (tableSize - 1); i > -1; i -= tableSize) {
+              tempArray.push(tdArray[i].innerHTML);
+            }
+            return tempArray;
+          });
+        } else if (directrion === 'left') {
+          array = new Array(tableSize).fill().map((element, index) => {
+            const tempArray = [];
+            for (let i = index * tableSize; i < (index + 1) * tableSize; i++) {
+              tempArray.push(tdArray[i].innerHTML);
+            }
+            return tempArray;
+          });
+        } else if (directrion === 'right') {
+          array = new Array(tableSize).fill().map((element, index) => {
+            const tempArray = [];
+            for (let i = (index + 1) * tableSize - 1; i > index * tableSize - 1; i--) {
+              tempArray.push(tdArray[i].innerHTML);
+            }
+            return tempArray;
+          });
+        }
+
+        //밀기
+        array.forEach((element, index) => {
+          for(let i = 0; i < element.length; i++) {
+            if (element[i] === '') {
+              for(j = i + 1; j < element.length; j++) {
+                if (element[j] !== '') {
+                  element[i] = element[j];
+                  element[j] = '';
+                  break;
+                }
+              }
+            }
+          }
+        });
+
+        //같은 숫자 합치기
+        array.forEach((element, index) => {
+          for(let i = 0; i < element.length; i++) {
+            if (element[i] !== '' && element[i] === element[i + 1]) {
+              element[i] = element[i] * 2;
+              for(j = i + 1; j < element.length - 1; j++) {
+                element[j] = element[j + 1];
+                element[j + 1] = '';
+              }
+            }              
+          }
+        });
+
+        //table에 값 표시
+        if (directrion === 'up') {
+          tdArray.forEach((element, index) => {
+            element.innerHTML = array[index % tableSize][Math.floor(index / tableSize)];
+            tdColor(element);
+          });
+        } else if (directrion === 'down') {
+          tdArray.forEach((element, index) => {
+            element.innerHTML = array[index % tableSize][tableSize - 1 - Math.floor(index / tableSize)];
+            tdColor(element);
+          });
+        } else if (directrion === 'left') {
+          tdArray.forEach((element, index) => {
+            element.innerHTML = array[Math.floor(index / tableSize)][index % tableSize];
+            tdColor(element);
+          });
+        } else if (directrion === 'right') {
+          tdArray.forEach((element, index) => {
+            element.innerHTML = array[Math.floor(index / tableSize)][tableSize - 1 - index % tableSize];
+            element=tdColor(element);
+          });
+        }        
+      }
+
+      //랜덤으로 td에 2
+      function f_makeRandomNumber() {
+        const array = [];
+        const tdList = document.querySelectorAll('td');
+        
+        tdList.forEach((element, index) => {
+          if (element.innerHTML === '') {
+            array.push(element);
+          }
+        });
+
+        if (array.length === 0) {
+          return true;
+        }
+
+        const randomIndex = Math.floor(Math.random() * array.length);
+        array[randomIndex].innerHTML = 2;
+        tdColor(array[randomIndex]);
+
+        return false;
+      }
+
+      //table 생성
+      for (let i = 0; i < tableSize; i++) {
+        const $tr = document.createElement('tr');
+        for (let j = 0; j < tableSize; j++) {
+          const $td = document.createElement('td');
+          $tr.append($td);
+        }
+        $table.append($tr);
+      }
+
+      //키보드 이벤트 리스너
+      document.addEventListener('keydown', f_keydown)
+
+
+      
+
+  </script>
+</body>
+</html>
