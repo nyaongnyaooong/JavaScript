@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Scissors Paper</title>
+    <style>
+        #computer {
+            width: 142px;
+            height: 200px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="computer"></div>
+    <div>
+        <button id="scissors">가위</button>
+        <button id="rock">바위</button>
+        <button id="paper">보</button>
+    </div>
+    <div id="score"></div>
+    <script>
+        const $computer = document.querySelector('#computer')
+        const $scissors = document.querySelector('#scissors')
+        const $rock = document.querySelector('#rock')
+        const $paper = document.querySelector('#paper')
+        const $score = document.querySelector('#score')
+        const IMG_URL = './rsp.png';
+        
+        $computer.style.background = `url(${IMG_URL}) -464px 0px`;
+        
+        //$computer.style.background = 'url(' + IMG_URL + ') -464px 0px';
+        $computer.style.backgroundSize = 'auto 200px';
+        
+        const rspX = {
+            scissors: '0', // 가위
+            rock: '-220px', // 바위
+            paper: '-440px', // 보
+        };
+
+        let computerRSP = 'scissors';
+
+        const changeComputerHand = () => {
+            if (computerRSP === 'scissors') {
+                computerRSP = 'rock';
+                $computer.style.background = `url(${IMG_URL}) ${rspX.rock} 0px`;
+                $computer.style.backgroundSize = 'auto 200px';
+            } else if (computerRSP === 'rock') {
+                computerRSP = 'paper';
+                $computer.style.background = `url(${IMG_URL}) ${rspX.paper} 0px`;
+                $computer.style.backgroundSize = 'auto 200px';
+            } else if (computerRSP === 'paper'){
+                computerRSP = 'scissors';
+                $computer.style.background = `url(${IMG_URL}) ${rspX.scissors} 0px`;
+                $computer.style.backgroundSize = 'auto 200px';
+            }
+        }
+
+        let interval = setInterval(changeComputerHand, 50);
+        let canInputFlag = true;
+        let userWincount = 0;
+        let computerWincount = 0;
+
+
+        const clickButton = (userRSP) => () => {
+            if (canInputFlag) {
+                clearInterval(interval);
+                canInputFlag = false;
+                //유저가 이김
+                if (userRSP === 'rock' && computerRSP === 'scissors') {
+                    userWincount++;
+                    $score.textContent = '승리 ' + userWincount + ':' + computerWincount;
+                } else if (userRSP === 'scissors' && computerRSP === 'paper') {
+                    userWincount++;
+                    $score.textContent = '승리 ' + userWincount + ':' + computerWincount;
+                } else if (userRSP === 'paper' && computerRSP === 'rock') {
+                    userWincount++;
+                    $score.textContent = '승리 ' + userWincount + ':' + computerWincount;
+                } else if (userRSP === computerRSP) {   //비김
+                    $score.textContent = '무승부 ' + userWincount + ':' + computerWincount;
+                } else {    //짐
+                    computerWincount++
+                    $score.textContent = '패배 ' + userWincount + ':' + computerWincount;
+                }
+                if(userWincount > 2) {
+                    $score.textContent = '나의 승리' + userWincount + ':' + computerWincount;
+                } else if(computerWincount > 2) {
+                    $score.textContent = '나의 패배' + userWincount + ':' + computerWincount;
+                } else {
+                    setTimeout(() => {
+                        canInputFlag = true;
+                        //clearInterval(interval);
+                        interval = setInterval(changeComputerHand, 50);
+                    }, 500);
+                }
+            }
+        };
+
+        $scissors.addEventListener('click', clickButton('scissors'));
+        $rock.addEventListener('click', clickButton('rock'));
+        $paper.addEventListener('click', clickButton('paper'));
+
+
+    </script>
+</body>
+</html>

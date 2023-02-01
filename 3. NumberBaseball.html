@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Baseball</title>
+    <style>
+
+
+    </style>
+</head>
+<body>
+    <form id="form">
+        <input type="text" id="numInput">
+        <button id="checkButton">확인</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        const _numInput = document.querySelector('#numInput');
+        const _form = document.querySelector('#form');
+        const _result = document.querySelector('#result');
+
+        let numbers = [];
+        let answer = [];
+        let triedNum = [];
+        let guess = '';
+        let countBall = 0;
+        let countStrike = 0;
+        let countOut = 0;
+        let log = '';
+        let tryCount = 0;
+
+        for(let i = 0; i < 10; i++) {
+            numbers.push(i);
+        }
+        for(let i = 0; i < 4; i++) {
+            let index = Math.floor(numbers.length * Math.random());
+            answer.push(numbers[index]);
+            numbers.splice(index, 1);
+        }
+        console.log(answer.join(''));
+
+        _form.addEventListener('submit', (event) => {
+            event.preventDefault(); //form 태그에 submit 명령시 기본적으로 새로고침을 하기때문에 이를 막음
+            countStrike = 0;
+            countBall = 0;
+            guess = _numInput.value; //혹은 아래 코드로도 대체가능
+            //guess = event.targer[0].value;
+            _numInput.value = '';
+
+            //검사
+            if(isNaN(guess)) {
+                alert('숫자를 입력해주세요');
+            } else if (guess.length != 4) {
+                alert('4자리 숫자를 입력해주세요');
+            } else if (new Set(guess).size != 4) {
+                alert('중복되지 않게 숫자를 입력해주세요');
+            } else if (triedNum.includes(guess)) {
+                alert('이미 시도했던 값 입니다.');
+            } else {
+                triedNum.push(guess);
+                for(let i = 0; i < 4; i++) {
+                    for(let j = 0; j < 4; j++) {
+                        if (answer[i] === parseInt(guess[j])) {
+                            if (i === j) {
+                                countStrike++;
+                            } else {
+                                countBall++;
+                            }
+                        }
+                    }
+                }
+                console.log(triedNum.length);
+                if (countStrike === 4) {
+                    _result.innerHTML = '정답! ' + guess;
+                } else if (triedNum.length > 9) {
+                    _result.innerHTML = '실패! 정답은 ' + answer.join('');
+                } else {
+                    if (countStrike === 0 && countBall === 0) {
+                        countOut++;
+                        log += guess + ' : ' + countOut + 'OUT <br/>';
+                    } else 
+                        log += guess + ' : ' + String(countStrike) + 'S ' + String(countBall) + 'B <br/>';
+                    
+                    _result.innerHTML = log;
+                    if (countOut > 2) {
+                        _result.innerHTML = '실패! 정답은 ' + answer.join('');
+                    }
+
+                }
+            } 
+            _numInput.focus(); //input에 커서 놓기
+            //console.log(String(countStrike) + '스트라이크 ' + String(countBall) + '볼');
+        });
+
+    </script>
+</body>
+</html>

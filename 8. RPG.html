@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text RPG</title>
+
+    <style>
+
+    </style>
+</head>
+<body>
+    <form id="startScreen">
+        <input id="nameInput" placeholder="주인공 이름을 입력하세요" />
+        <button id="start">시작</button>
+    </form>
+    <div id="screen">
+        <div id="heroStat">
+            <span id="heroName"></span>
+            <span id="heroLevel"></span>
+            <span id="heroHP"></span>
+            <span id="heroXP"></span>
+            <span id="heroATT"></span>
+        </div>
+
+        <form id="gameMenu" style="display: none">
+            <div id="menu1">1.모험</div>
+            <div id="menu2">2.휴식</div>
+            <div id="menu3">3.종료</div>
+            <input id="menuInput" />
+            <button id="menuButton">입력</button>
+        </form>
+
+        <form id="battleMenu" style="display: none">
+            <div id="battle1">1.공격</div>
+            <div id="battle2">2.회복</div>
+            <div id="battle3">3.도망</div>
+            <input id="battleInput" />
+            <button id="battleButton">입력</button>
+        </form>
+
+        <div id="message"></div>
+
+        <div id="monsterStat">
+            <span id="monsterName"></span>
+            <span id="monsterHP"></span>
+            <span id="monsterATT"></span>
+        </div>
+    </div>
+    
+    <script>
+        const $startScreen = document.getElementById('startScreen')
+        const $gameMenu = document.getElementById('gameMenu')
+        const $battleMenu = document.getElementById('battleMenu')
+
+        const $heroName = document.getElementById('heroName')
+        const $heroLevel = document.getElementById('heroLevel')
+        const $heroHP = document.getElementById('heroHP')
+        const $heroXP = document.getElementById('heroXP')
+        const $heroATT = document.getElementById('heroATT')
+
+        const $monsterName = document.getElementById('monsterName')
+        const $monsterLevel = document.getElementById('monsterLevel')
+        const $monsterHP = document.getElementById('monsterHP')
+        const $monsterXP = document.getElementById('monsterXP')
+        const $monsterATT = document.getElementById('monsterATT')
+
+        const $message = document.getElementById('message')
+
+        const screenList = [$startScreen, $gameMenu, $battleMenu];
+
+        class Game {
+            constructor(name) {
+                this.monsterList = [
+                    { name: '슬라임', hp: '25', att: '10' },
+                    { name: '스켈레톤', hp: '50', att: '15' },
+                    { name: '마왕', hp: '500', att: '100' },
+                ];
+                this.monster = new Monster(this);
+                this.hero = new Hero(this, name)
+
+
+                this.start();
+            }
+
+            start() {
+                //이벤트 리스너 생성
+                $gameMenu.addEventListener('submit', this.gameBehaviorClicked);
+                $battleMenu.addEventListener('submit', this.battleBehaviorClicked);
+                //게임 메뉴로 이동
+                this.screenChange($gameMenu);
+                //location.replace(navigate('https://etk.srail.kr/cmc/01/selectLoginForm.do');
+            }
+
+            screenChange(toWhichScreen) {
+                screenList.forEach((element, index) => {
+                    if (toWhichScreen === $gameMenu && element === $gameMenu) {
+                        $heroName.innerHTML = this.hero.name;
+                        $heroLevel.innerHTML = this.hero.level + 'lv';
+                        $heroHP.innerHTML = 'HP : ' + this.hero.hp + '/' + this.hero.maxHP;
+                        $heroXP.innerHTML = 'XP : ' + this.hero.xp + '/' + this.hero.level * 15;
+                        $heroATT.innerHTML = 'ATT : ' + this.hero.att;
+                        element.style.display = 'block';
+                    } else if (toWhichScreen ===  element ) {
+                        console.log(toWhichScreen);
+                        element.style.display = 'block';
+                    }
+                    else {
+                        element.style.display = 'none';
+                    }
+                });
+            }
+
+            gameBehaviorClicked = (event) => {
+                event.preventDefault();
+                if (event.target['menuInput'].value === '1') {
+                    this.screenChange($battleMenu);
+                } else if (event.target['menuInput'].value === '2') {
+        
+                } else if (event.target['menuInput'].value === '3') {
+                    console.log(this);
+                }
+            }
+
+            battleBehaviorClicked(event) {
+                event.preventDefault();
+            }
+        }
+        
+
+        class Hero {
+            constructor(game, name) {
+                this.game = game;
+                this.name = name;
+                this.level = 1;
+                this.maxHP = 100;
+                this.hp = 100;
+                this.xp = 0;
+                this.att = 10;
+            }
+
+            attack(target) {
+                target.hp -= this.att;
+            }
+            heal(monster) {
+                this.hp += 20;
+                this.hp -= monster.att
+            }
+        }
+
+        class Monster {
+            constructor(game) {
+                this.game = game;
+                let monster = [...game.monsterList];
+                this.monster = monster[(Math.random() * monster.length)];
+                //this.monster = game.monsterList[Math.floor(Math.random() * game.monsterList.length)];
+            }
+        }
+
+        let game;
+        $startScreen.addEventListener('submit', (event) => {    //시작 버튼 누르면
+            event.preventDefault();
+            const name = event.target['nameInput'].value;   //주인공 이름 입력 받기
+            game = new Game(name);
+/*
+            $startScreen.style.display = 'none';
+            $gameMenu.style.display = 'block';
+            $heroName.textContent = name;
+            $heroLevel.innerHTML = heroStat.level + 'lv';
+            $heroHP.innerHTML = 'HP: ' + heroStat.hp;
+            $heroXP.innerHTML = 'XP: ' + heroStat.xp + '/' + heroStat.level * 15;
+            $heroATT.innerHTML = 'ATT: ' + heroStat.att;
+*/
+        });
+/*
+        $gameMenu.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const input = event.target['menuInput'].value;
+            if (input === 1) {
+                $gameMenu.style.display = 'none';
+                $battleMenu.style.display = 'block';
+            }
+            $startScreen.style.display = 'none';
+            $gameMenu.style.display = 'block';
+            $heroName.textContent = name;
+            $heroLevel.innerHTML = heroStat.level + 'lv';
+            $heroHP.innerHTML = 'HP: ' + heroStat.hp;
+            $heroXP.innerHTML = 'XP: ' + heroStat.xp + '/' + heroStat.level * 15;
+            $heroATT.innerHTML = 'ATT: ' + heroStat.att;
+
+            
+        });
+
+        $startScreen.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const name = event.target['nameInput'].value;
+            $startScreen.style.display = 'none';
+            $gameMenu.style.display = 'block';
+            $heroName.textContent = name;
+            $heroLevel.innerHTML = heroStat.level + 'lv';
+            $heroHP.innerHTML = 'HP: ' + heroStat.hp;
+            $heroXP.innerHTML = 'XP: ' + heroStat.xp + '/' + heroStat.level * 15;
+            $heroATT.innerHTML = 'ATT: ' + heroStat.att;
+
+            
+        });
+
+*/
+
+    </script>
+    
+</body>
+</html>

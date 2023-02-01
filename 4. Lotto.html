@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lotto</title>
+    <style>
+        .ball {
+        display: inline-block;
+        border: 1px solid black;
+        border-radius: 20px;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 20px;
+        text-align: center;
+        margin-right: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="result">추첨 결과는?</div>
+    <div id="bonus">보너스 : </div>
+
+    <script>
+        let numBox = Array(45).fill().map((element, index) => index + 1);
+        let shuffleBox = [];
+        //피셔 예이츠 셔플 (전체 숫자 셔플)
+        while(numBox.length > 0) {
+            let randomNum = Math.floor(Math.random() * numBox.length);
+            shuffleBox.push(numBox.splice(randomNum, 1)[0]);
+        }
+        //console.log(shuffleBox);
+
+        //앞에서부터 6개 뽑고 정렬
+        let draw = shuffleBox.slice(0, 6).sort((a, b) => a - b);
+
+        //7번째를 보너스 번호
+        let bonus = shuffleBox[6];
+        console.log(draw, bonus);
+
+        let _result = document.querySelector('#result');
+        let _bonus = document.querySelector('#bonus');
+
+        let showBall = (position, content) => {
+            const _ball = document.createElement('div');
+            _ball.className = 'ball';
+            _ball.textContent = content;
+            if (content < 10) {
+                _ball.style.backgroundColor = 'red';
+                _ball.style.color = 'white';
+            } else if (content < 20){
+                _ball.style.backgroundColor = 'orange';
+                _ball.style.color = 'white';
+            } else if (content < 30){
+                _ball.style.backgroundColor = 'green';
+                _ball.style.color = 'white';
+            } else if (content < 40){
+                _ball.style.backgroundColor = 'blue';
+                _ball.style.color = 'white';
+            } else {
+                _ball.style.backgroundColor = 'purple';
+                _ball.style.color = 'white';
+            }
+            position.append(_ball);
+        };
+
+        //showBall(_result, '1');
+        for (let i = 0; i < draw.length; i++) {
+            setTimeout(() => {
+                showBall(_result, draw[i]);
+            }, (i + 1) * 1000);
+        }
+        setTimeout(() => {
+            showBall(_bonus, bonus);
+        }, 7000);
+
+        /*
+            원본 배열을 보존하면서 sort
+            shuffle.slice().sort((a, b) => a - b);
+        */
+
+
+    </script>
+
+</body>
+</html>

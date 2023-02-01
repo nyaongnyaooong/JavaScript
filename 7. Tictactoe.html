@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            border: 1px solid black;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+	
+    <script>
+        const { body } = document;
+        const $table = document.createElement('table');
+        const $result = document.createElement('div');
+        let turn = 'O'
+        const rows = [];
+
+        const clickFunction = (event) => {
+
+            if (event.target.innerHTML) return;
+            
+            event.target.innerHTML = turn;
+
+            let Winner = checkWinner(event.target);
+            if (Winner) {
+                printWinnerMessage(Winner);
+            } else {
+                const emptyCells = rows.flat().filter((element) => !element.innerHTML)
+                let computerPick = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                if (emptyCells.length) {
+                    computerPick.innerHTML = 'X';
+                    Winner = checkWinner(computerPick);
+                }
+                printWinnerMessage(Winner);
+            }
+
+        };
+
+        //승자 판별하여 승자가 있을 시 O X, 없을 시 false retun
+        const checkWinner = (eventTarget) => {
+            let rowIndex;
+            let columnIndex;
+
+            //클릭한 td의 좌표 찾기
+            rows.forEach((columns, ri) => {
+                columns.forEach((td, ci) => {
+                    if (td === eventTarget) {
+                        rowIndex = ri;
+                        columnIndex = ci;
+                    }
+                });
+            });
+            console.log(rowIndex, columnIndex);
+            if (
+                rows[rowIndex][0].innerHTML === rows[rowIndex][1].innerHTML && 
+                rows[rowIndex][1].innerHTML === rows[rowIndex][2].innerHTML
+                ) {
+                    return rows[rowIndex][0].innerHTML;
+            } else if (
+                rows[0][columnIndex].innerHTML === rows[1][columnIndex].innerHTML && 
+                rows[1][columnIndex].innerHTML === rows[2][columnIndex].innerHTML
+                ){
+                    return rows[0][columnIndex].innerHTML;
+            } else if (rows[1][1].innerHTML && (
+                    rows[0][0].innerHTML === rows[1][1].innerHTML && 
+                    rows[1][1].innerHTML === rows[2][2].innerHTML ||
+                    rows[0][2].innerHTML === rows[1][1].innerHTML && 
+                    rows[1][1].innerHTML === rows[2][0].innerHTML
+                )             
+            ) {
+                    return rows[1][1].innerHTML;
+            } else {
+                return false;
+            }            
+        };
+
+        const printWinnerMessage = (Winner) => {
+            if (Winner) {
+                $table.removeEventListener('click', clickFunction);
+                if (Winner === 'O') {
+                    $result.innerHTML = 'Player1 is Winner!';
+                } else {
+                    $result.innerHTML = 'Player2 is Winner!';
+                }
+            } else if (rows.flat().every((rows) => rows.innerHTML))
+                $result.innerHTML = 'Draw!';
+        };
+
+
+        for(let i = 0; i < 3; i++) {
+            const $tr = document.createElement('tr');
+            const columns = [];
+            for(let j = 0; j < 3; j++) {
+                const $td = document.createElement('td');
+                columns.push($td);
+
+                $tr.append($td);
+            }
+            rows.push(columns);
+            $table.append($tr);
+        }
+
+        $table.addEventListener('click', clickFunction);
+
+        body.append($table);
+        body.append($result);
+    </script>
+</body>
+</html>
